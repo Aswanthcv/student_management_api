@@ -22,6 +22,24 @@ class StudentApiView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+    def put(self, request,id):
+        
+        student = Student.objects.get(id=id)
+        serializer = StudentSerializer(student,data=request.data)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+
+        return Response("Invaid object", status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self,request,id):
+
+        student = Student.objects.filter(id=id).first()
+        
+        if not student:
+            return Response("Student not found",status=404)
+        student.delete()
+        return Response("Student was deleted",status=200)
